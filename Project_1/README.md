@@ -1,6 +1,6 @@
 # 🚀 Azure DevOps Project 1: Infrastructure Automation & CI/CD 
 
-![Project Architecture](Architecture.png)
+![Project Architecture](aks_with_terraform.png)
 
 ## 📌 Project Overview
 This project serves as a comprehensive demonstration of a modern **DevOps Lifecycle** on Microsoft Azure. It bridges the gap between manual resource creation and fully automated, secure, and scalable cloud deployments.
@@ -16,8 +16,7 @@ The goal of this lab was to architect a secure environment using **Infrastructur
 | **IaC** | Terraform / Bicep |
 | **Orchestration** | Azure Kubernetes Service (AKS) |
 | **CI/CD** | Azure DevOps Pipelines (YAML) |
-| **Security** | Azure Key Vault, RBAC, Managed Identities |
-| **Local Dev** | WSL2 (Ubuntu), VS Code, Azure CLI |
+| **Security** | Azure Key Vault, RBAC, 
 
 ---
 
