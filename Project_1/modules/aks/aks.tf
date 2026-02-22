@@ -1,14 +1,20 @@
+resource "azurerm_resource_group" "rg" {
+  name     = "${var.proj}-${var.env}-rg"
+  location = var.location
+}
+
 data "azurerm_kubernetes_service_versions" "version" {
   location        = var.location
   include_preview = false
 }
+
 resource "azurerm_kubernetes_cluster" "ask_cluster" {
-  name                = "aks-cluster001"
+  name                = "${var.proj}-${var.env}0011"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
-  dns_prefix          = "${var.rg_name}-cluster"
+  dns_prefix          = "${var.proj}-${var.env}0011"
   kubernetes_version  = data.azurerm_kubernetes_service_versions.version.latest_version
-  node_resource_group = "${var.rg_name}-nrg"
+  node_resource_group = "${var.proj}-${var.env}-node_rg"
 
   default_node_pool {
     name            = "nodepool"
@@ -18,8 +24,8 @@ resource "azurerm_kubernetes_cluster" "ask_cluster" {
     os_sku          = "Ubuntu"
   }
   service_principal {
-    client_id     = azuread_service_principal.sp.client_id
-    client_secret = azuread_service_principal_password.psswd.value
+    client_id     = var.client_id
+    client_secret = var.client_secret
   }
   linux_profile {
     admin_username = "ubuntu"

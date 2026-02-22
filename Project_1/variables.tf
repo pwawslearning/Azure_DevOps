@@ -3,11 +3,22 @@ variable "location" {
   default = "Southeast Asia"
 }
 
-variable "rg_name" {
-  type    = string
-  default = "aks-lab-rg"
-}
-
 variable "subscription_id" {
   type = string
+  default = ""
+}
+
+variable "proj" {
+  type = string
+  default = "aks"
+}
+
+variable "env" {
+  type = string
+  default = "dev"
+}
+
+variable "sku_name" {
+  type = string
+  default = "standard"
 }
