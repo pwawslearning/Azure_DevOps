@@ -15,7 +15,6 @@ variable "proj" {
 
 variable "env" {
   type = string
-  default = "dev"
 }
 
 variable "sku_name" {
