@@ -157,6 +157,7 @@ stages:
 5.  **Provision:** Terraform applies changes, provisioning AKS, Networking, and Security components.
 6.  **Verification:** AKS cluster becomes operational and fetches necessary secrets from Key Vault.
 
+
 ---
 ## :monocle_face: Troubleshooting
 
@@ -187,14 +188,6 @@ Need to assign ```storage blob contributer``` role for your identity
 
 ```bash
 ╷
-│ Error: unexpected status 403 (403 Forbidden) with error: AuthorizationFailed: The client '***' with object id 'b8d8e78a-f0ee-402d-ba75-aaaaaaaaaaa' does not have authorization to perform action 'Microsoft.Authorization/roleAssignments/write' over scope '/subscriptions/<subscription_id>/providers/Microsoft.Authorization/roleAssignments/7a32af1e-76d6-4095-7894-4accc162f20c' or the scope is invalid. If access was recently granted, please refresh your credentials.
-│ 
-│   with azurerm_role_assignment.sp_role,
-│   on main.tf line 10, in resource "azurerm_role_assignment" "sp_role":
-│   10: resource "azurerm_role_assignment" "sp_role" {
-│ 
-╵
-╷
 │ Error: a resource with the ID "https://aks-dev-kv115.vault.azure.net/secrets/72d367f4-c6d0-4647-bfae-62629aff130a/d7161768e0e54390bda94019bb207443" already exists - to be managed via Terraform this resource needs to be imported into the State. Please see the resource documentation for "azurerm_key_vault_secret" for more information
 │ 
 │   with azurerm_key_vault_secret.kv_secret,
@@ -206,3 +199,17 @@ Need to assign ```storage blob contributer``` role for your identity
 Need to assign ```key vault contributer``` role for your identity
 ![for_key_vault_issue](./photos/key_vault_contributor.png)
 
+---
+
+### Deployment in Dev environment
+![Dev_deploy](./photos/dev_deploy.png)
+
+### Deployment in Staging environment
+
+![Staging_deploy](./photos/staging_deploy.png)
+
+### Destroy infra in Dev environment
+![Dev_destroy](./photos/dev_destroy.png)
+
+### Destroy infra in Staging environment
+![Staging_destroy](./photos/staging_destroy.png)
