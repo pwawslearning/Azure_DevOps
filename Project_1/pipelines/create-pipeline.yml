@@ -1,0 +1,59 @@
+trigger: none
+
+parameters:
+  - name: environment
+    type: string
+    values:
+      - dev
+      - staging
+    default: dev
+
+
+stages:
+
+- stage: Build
+  jobs:
+    - job: Build
+      pool: MyPool
+      steps:
+      - script: sudo apt-get update && sudo apt-get install -y unzip
+        displayName: 'install unzip on agent'
+      - task: TerraformInstaller@1
+        displayName: TF_installation
+        inputs:
+          terraformVersion: 'latest'
+      
+      - task: TerraformTask@5
+        displayName: tf init
+        inputs:
+          provider: 'azurerm'
+          command: 'init'
+          workingDirectory: '$(System.DefaultWorkingDirectory)/Project_1/${{ parameters.environment }}'
+          backendAzureRmUseCliFlagsForAuthentication: true
+          backendServiceArm: 'Azure_Connection'
+          backendAzureRmResourceGroupName: 'terraform-state-rg'
+          backendAzureRmStorageAccountName: 'tfbackendfor${{ parameters.environment }}'
+          backendAzureRmContainerName: 'tfstate'
+          backendAzureRmKey: '${{ parameters.environment }}.terraform.tfstate'
+
+      - task: TerraformTask@5
+        inputs:
+          provider: 'azurerm'
+          command: 'validate'
+          workingDirectory: '$(System.DefaultWorkingDirectory)/Project_1/${{ parameters.environment }}'
+      - task: TerraformTask@5
+        inputs:
+          provider: 'azurerm'
+          command: 'plan'
+          workingDirectory: '$(System.DefaultWorkingDirectory)/Project_1/${{ parameters.environment }}'
+          environmentServiceNameAzureRM: 'Azure_Connection'
+
+      - task: TerraformTask@5
+        inputs:
+          provider: 'azurerm'
+          command: 'apply'
+          workingDirectory: '$(System.DefaultWorkingDirectory)/Project_1/${{ parameters.environment }}'
+          commandOptions: '--auto-approve'
+          environmentServiceNameAzureRM: 'Azure_Connection'
+      
+      

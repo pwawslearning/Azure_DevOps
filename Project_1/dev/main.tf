@@ -1,5 +1,7 @@
 module "service_principal" {
-  source = "./modules/service_principal"
+  source = "../modules/service_principal"
+  env = var.env
+  proj = var.proj
 }
 
 
@@ -14,9 +16,11 @@ resource "azurerm_role_assignment" "sp_role" {
 }
 
 module "key_vault" {
-  source = "./modules/key_vault"
+  source = "../modules/key_vault"
   location = var.location
   sku_name = var.sku_name
+  env = var.env
+  proj = var.proj
 }
 
 resource "azurerm_key_vault_secret" "kv_secret" {
@@ -27,8 +31,10 @@ resource "azurerm_key_vault_secret" "kv_secret" {
 }
 
 module "aks" {
-  source = "./modules/aks"
+  source = "../modules/aks"
   location = var.location
   client_id = module.service_principal.client_id
   client_secret = module.service_principal.client_secret
+  proj = var.proj
+  env = var.env
 }

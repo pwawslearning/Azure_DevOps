@@ -1,0 +1,42 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger: none
+
+parameters:
+  - name: environment
+    type: string
+    values:
+      - dev
+      - staging
+    default: dev
+
+stages:
+  - stage: Destroy
+    jobs:
+      - job: Destroy
+        pool: MyPool
+        steps:
+        - task: TerraformInstaller@1
+          inputs:
+            terraformVersion: 'latest'
+        - task: TerraformTask@5
+          inputs:
+            provider: 'azurerm'
+            command: 'init'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/Project_1/${{ parameters.environment }}'
+            backendAzureRmUseCliFlagsForAuthentication: true
+            backendServiceArm: 'Azure_Connection'
+            backendAzureRmResourceGroupName: 'terraform-state-rg'
+            backendAzureRmStorageAccountName: 'tfbackendfor${{ parameters.environment }}'
+            backendAzureRmContainerName: 'tfstate'
+            backendAzureRmKey: '${{ parameters.environment }}.terraform.tfstate'
+        - task: TerraformTask@5
+          inputs:
+            provider: 'azurerm'
+            command: 'destroy'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/Project_1/${{ parameters.environment }}'
+            commandOptions: '--auto-approve'
+            environmentServiceNameAzureRM: 'Azure_Connection'

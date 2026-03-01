@@ -15,6 +15,7 @@ variable "proj" {
 
 variable "env" {
   type = string
+  default = "staging"
 }
 
 variable "sku_name" {
