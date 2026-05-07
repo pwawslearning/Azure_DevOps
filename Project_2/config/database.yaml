@@ -1,0 +1,9 @@
+posgres_sql_db:
+  version: "12"
+  admin_login: "psqladmin"
+  # admin_password: "P@ssw0rd1234!" Managed by Azure Key Vault
+  storage_mb: 32768
+  storage_tier: "P4"
+  sku_name: "B_Standard_B1ms"
+  public_network_access_enabled: false
+  zone: "1"

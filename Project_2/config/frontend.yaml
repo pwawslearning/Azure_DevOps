@@ -1,0 +1,24 @@
+application_gateway:
+  sku: 
+    name: WAF_v2
+    tier: WAF_v2
+    capacity: 2
+  
+  frontend_port:
+    port: 80
+  
+  backend_http_settings:
+    cookie_based_affinity: Disabled
+    path: /
+    port: 80
+    protocol: Http
+  
+  listener: 
+    protocol: Http
+  
+  probe:
+    protocol: Http
+    port: 80
+  
+  waf_config:
+    version: "3.2"

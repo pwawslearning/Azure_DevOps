@@ -1,0 +1,113 @@
+vmss:
+  web-vmss01:
+    tier: web
+    subnet: web_sub01
+    backend_pool: appgw          # attach to Application Gateway
+    sku:
+      name: Standard_B2s
+      instances: 1
+      tier: Standard
+    autoscale:
+      min: 1
+      max: 3
+      cpu_scale_out: 90
+      cpu_scale_in: 25
+    zones: [1, 2]
+    admin_username: adminuser
+
+    ssh:
+      username: adminuser
+      
+    image:
+      publisher: Canonical
+      offer:  0001-com-ubuntu-server-jammy
+      sku: 22_04-lts
+      version: latest
+      
+    os_disk:
+      size_gb: 64
+      storage_account_type: Standard_LRS
+  
+  web-vmss02:
+    tier: web
+    subnet: web_sub02
+    backend_pool: appgw          # attach to Application Gateway
+    sku:
+      name: Standard_B2s
+      instances: 1
+      tier: Standard
+    autoscale:
+      min: 1
+      max: 3
+      cpu_scale_out: 90
+      cpu_scale_in: 25
+    zones: [1, 2]
+    admin_username: adminuser
+
+    ssh:
+      username: adminuser
+      
+    image:
+      publisher: Canonical
+      offer:  0001-com-ubuntu-server-jammy
+      sku: 22_04-lts
+      version: latest
+      
+    os_disk:
+      size_gb: 64
+      storage_account_type: Standard_LRS
+  
+  app-vmss01:
+    tier: app
+    subnet: app_sub01
+    backend_pool: lb             # attach to Load Balancer
+    sku:
+      name: Standard_B2s
+      instances: 1
+      tier: Standard
+    autoscale:
+      min: 1
+      max: 3
+      cpu_scale_out: 90
+      cpu_scale_in: 25
+    zones: [1, 2]
+    admin_username: adminuser
+    ssh:
+      username: adminuser
+    image:
+      publisher: Canonical
+      offer: 0001-com-ubuntu-server-jammy
+      sku: 22_04-lts
+      version: latest
+    os_disk:
+      size_gb: 64
+      storage_account_type: Standard_LRS
+  
+  app-vmss02:
+    tier: app
+    subnet: app_sub02
+    backend_pool: lb             # attach to Load Balancer
+    sku:
+      name: Standard_B2s
+      instances: 1
+      tier: Standard
+    autoscale:
+      min: 1
+      max: 3
+      cpu_scale_out: 90
+      cpu_scale_in: 25
+    zones: [1, 2]
+    admin_username: adminuser
+    ssh:
+      username: adminuser
+    image:
+      publisher: Canonical
+      offer: 0001-com-ubuntu-server-jammy
+      sku: 22_04-lts
+      version: latest
+    os_disk:
+      size_gb: 64
+      storage_account_type: Standard_LRS
+      
+  
+      

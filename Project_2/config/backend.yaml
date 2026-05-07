@@ -1,0 +1,7 @@
+load_balancer:
+  backend_port: "8080"
+  backend_protocol: "Http"
+  probe_request_path: "/"
+  probe_interval: 15
+  application_port: 8080
+  application_protocol: "Tcp"

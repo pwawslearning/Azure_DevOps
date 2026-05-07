@@ -1,0 +1,241 @@
+vnet:
+  address_space: 10.0.0.0/24
+  subnets:
+    apgw_sub01:
+      address_prefix: 10.0.0.0/28
+      nat_gateway: false
+      delegate_to_postgres: false
+    web_sub01:
+      address_prefix: 10.0.0.16/28
+      nat_gateway: false
+      delegate_to_postgres: false
+    web_sub02:
+      address_prefix: 10.0.0.32/28
+      nat_gateway: false
+      delegate_to_postgres: false
+    app_sub01:
+      address_prefix: 10.0.0.48/28
+      nat_gateway: true
+      delegate_to_postgres: false
+    app_sub02:
+      address_prefix: 10.0.0.64/28
+      nat_gateway: true
+      delegate_to_postgres: false
+    db_sub01:
+      address_prefix: 10.0.0.80/28
+      nat_gateway: false
+      delegate_to_postgres: true
+    db_sub02:
+      address_prefix: 10.0.0.96/28
+      nat_gateway: false
+      delegate_to_postgres: true
+    AzureBastionSubnet:                             # must be exactly 'AzureBastionSubnet'
+      address_prefix: 10.0.0.224/28
+      nat_gateway: false
+      delegate_to_postgres: false
+
+nsg:
+  apgw_sub01:
+    nsg_rules:
+      - name: allow_Http_Inbound
+        priority: 1000
+        direction: Inbound
+        access: Allow
+        protocol: Tcp
+        source_port_range: "*"
+        destination_port_range: "80"
+        source_address_prefix: "*"
+        destination_address_prefix: "*"
+
+      # Required for Application Gateway v2 — do not remove
+      - name: allow_AppGW_Management
+        priority: 1010
+        direction: Inbound
+        access: Allow
+        protocol: Tcp
+        source_port_range: "*"
+        destination_port_range: "65200-65535"
+        source_address_prefix: "GatewayManager"   # Azure service tag
+        destination_address_prefix: "*"
+
+      # Required for Azure Load Balancer health probes
+      - name: allow_AzureLoadBalancer
+        priority: 1020
+        direction: Inbound
+        access: Allow
+        protocol: "*"
+        source_port_range: "*"
+        destination_port_range: "*"
+        source_address_prefix: "AzureLoadBalancer"
+        destination_address_prefix: "*"
+
+  web_sub01:
+    nsg_rules:
+      - name: allow_ssh_from_bh
+        priority: 100
+        direction: Inbound
+        access: Allow
+        protocol: Tcp
+        source_port_range: "*"
+        destination_port_range: "22"
+        source_address_prefix: "VirtualNetwork"
+        destination_address_prefix: "VirtualNetwork"
+      - name: allow_Http
+        priority: 1000
+        direction: Inbound
+        access: Allow
+        protocol: Tcp
+        source_port_range: "*"
+        destination_port_range: "80"
+        source_address_prefix: "10.0.0.0/28"
+        destination_address_prefix: "*"
+      - name: DenyAllow
+        priority: 4095
+        direction: Inbound
+        access: Deny
+        protocol: "*"
+        source_port_range: "*"
+        destination_port_range: "*"
+        source_address_prefix: "*"
+        destination_address_prefix: "*"
+      - name: allow_outbound_to_app
+        priority: 1000
+        direction: Outbound
+        access: Allow
+        protocol: Tcp
+        source_port_range: "*"
+        destination_port_range: "8000"
+        source_address_prefix: "10.0.0.16/28"
+        destination_address_prefixes: 
+          - "10.0.0.48/28"
+          - "10.0.0.64/28"
+  web_sub02:
+    nsg_rules:
+      - name: allow_ssh_from_bh
+        priority: 100
+        direction: Inbound
+        access: Allow
+        protocol: Tcp
+        source_port_range: "*"
+        destination_port_range: "22"
+        source_address_prefix: "VirtualNetwork"
+        destination_address_prefix: "VirtualNetwork"
+      - name: allow_Http
+        priority: 1000
+        direction: Inbound
+        access: Allow
+        protocol: Tcp
+        source_port_range: "*"
+        destination_port_range: "80"
+        source_address_prefix: "10.0.0.0/28"
+        destination_address_prefix: "*"
+      - name: DenyAllow
+        priority: 4095
+        direction: Inbound
+        access: Deny
+        protocol: "*"
+        source_port_range: "*"
+        destination_port_range: "*"
+        source_address_prefix: "*"
+        destination_address_prefix: "*"
+      - name: allow_outbound_to_app
+        priority: 1000
+        direction: Outbound
+        access: Allow
+        protocol: Tcp
+        source_port_range: "*"
+        destination_port_range: "8000"
+        source_address_prefix: "10.0.0.16/28"
+        destination_address_prefixes: 
+          - "10.0.0.48/28"
+          - "10.0.0.64/28"
+
+  app_sub01:
+    nsg_rules:
+      - name: allow_ssh
+        priority: 100
+        direction: Inbound
+        access: Allow
+        protocol: Tcp
+        source_port_range: "*"
+        destination_port_range: "22"
+        source_address_prefix: "VirtualNetwork"
+        destination_address_prefix: "VirtualNetwork"
+      - name: allow_Tcp
+        priority: 1000
+        direction: Inbound
+        access: Allow
+        protocol: Tcp
+        source_port_range: "*"
+        destination_port_range: "8000"
+        source_address_prefixes:
+          - "10.0.0.16/28"
+          - "10.0.0.32/28"
+        destination_address_prefix: "*"
+      - name: DenyAllow
+        priority: 4095
+        direction: Inbound
+        access: Deny
+        protocol: "*"
+        source_port_range: "*"
+        destination_port_range: "*"
+        source_address_prefix: "*"
+        destination_address_prefix: "*"
+  app_sub02:
+    nsg_rules:
+      - name: allow_ssh
+        priority: 100
+        direction: Inbound
+        access: Allow
+        protocol: Tcp
+        source_port_range: "*"
+        destination_port_range: "22"
+        source_address_prefix: "VirtualNetwork"
+        destination_address_prefix: "VirtualNetwork"
+      - name: allow_Tcp
+        priority: 1000
+        direction: Inbound
+        access: Allow
+        protocol: Tcp
+        source_port_range: "*"
+        destination_port_range: "8000"
+        source_address_prefixes:
+          - "10.0.0.16/28"
+          - "10.0.0.32/28"
+        destination_address_prefix: "*"
+      - name: DenyAllow
+        priority: 4095
+        direction: Inbound
+        access: Deny
+        protocol: "*"
+        source_port_range: "*"
+        destination_port_range: "*"
+        source_address_prefix: "*"
+        destination_address_prefix: "*"
+
+  db_sub01:
+    nsg_rules:
+      - name: AllowDBport
+        priority: 1000
+        direction: Inbound
+        access: Allow
+        protocol: Tcp
+        source_port_range: "*"
+        destination_port_range: "5432"
+        source_address_prefixes:
+          - "10.0.0.48/28"
+          - "10.0.0.64/28"
+        destination_address_prefix: "*"
+  db_sub02:
+    nsg_rules:
+      - name: AllowDBport
+        priority: 1000
+        direction: Inbound
+        access: Allow
+        protocol: Tcp
+        source_port_range: "*"
+        destination_port_range: "5432"
+        source_address_prefixes:
+          - "10.0.0.48/28"
+          - "10.0.0.64/28"
+        destination_address_prefix: "*"
