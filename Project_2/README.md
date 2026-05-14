@@ -16,29 +16,8 @@ The architecture spans **two availability zones** for high availability, with a 
 
 ## 🏛️ Architecture Overview
 
-![Architecture Diagram](./architecture.png)
+![Architecture Diagram](./images/Azure%203Tier%20Architecture.png)
 
-```
-                         ┌──────────────────────────────────────────────────────────────────┐
-                         │                        Azure VNet                                │
-                         │                                                                  │
-  Users                  │  ┌─────────────┐   ┌──────────────────┐   ┌──────────────────┐  │
-   │                     │  │  web_sub01  │   │   app_sub01      │   │   db_sub01       │  │
-   │ HTTP/80             │  │  web_vmss01 │   │   app_vmss01     │   │  PostgreSQL DB   │  │
-   ▼                     │  ├─────────────┤   ├──────────────────┤   ├──────────────────┤  │
-┌──────────┐  HTTP/80    │  │  web_sub02  │   │   app_sub02      │   │   db_sub02       │  │
-│  App GW  │ ──────────► │  │  web_vmss02 │──►│   app_vmss02     │──►│  PostgreSQL DB   │  │
-│(appgw_   │             │  └─────────────┘   └──────────────────┘   └──────────────────┘  │
-│ subnet)  │             │        HTTP/80            HTTP/8080             TCP/5432          │
-└──────────┘             │                                                                  │
-                         │  ┌──────────────────┐   ┌──────────────┐   ┌──────────────┐    │
-                         │  │  AzureBastionSub  │   │   Storage    │   │  Key Vault   │    │
-                         │  │   Azure Bastion   │   │   Account    │   │  (Secrets)   │    │
-                         │  └──────────────────┘   └──────────────┘   └──────────────┘    │
-                         │                                                                  │
-                         │                    Private DNS Zones                             │
-                         └──────────────────────────────────────────────────────────────────┘
-```
 
 | Tier | Resource | Details |
 |------|----------|---------|
